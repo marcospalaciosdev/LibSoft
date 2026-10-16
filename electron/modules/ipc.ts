@@ -8,7 +8,9 @@ import {
 import {
 	exportBackup,
 	importBackup,
-	readBackupHistory
+	readBackupHistory,
+	getDefaultBackupRoute,
+	setDefaultBackupRoute
 } from './backup';
 
 /**
@@ -26,6 +28,19 @@ export function registerIpcHandlers(
 	getMainWindow: () => BrowserWindow | null
 ): void {
 	// ── Autenticación ────────────────────────────────────────
+
+	ipcMain.handle('get-default-backup-path', async () => {
+		return getDefaultBackupRoute();
+	});
+
+	ipcMain.handle('set-default-backup-path', async (_event, route: string) => {
+		try {
+			return await setDefaultBackupRoute(route);
+		} catch (error: any) {
+			throw new Error(error.message || 'Error al guardar la ruta de backup');
+		}
+	});
+
 	ipcMain.handle('save-auth-session', (_event, session: { token: string; user: unknown }) => {
 		try {
 			saveAuthSession(session);

@@ -502,3 +502,36 @@ export async function importBackup(
 		throw err;
 	}
 }
+
+function getBackupSettingsPath(): string {
+	return path.join(app.getPath('userData'), 'backup_settings.json');
+}
+
+export async function getDefaultBackupRoute(): Promise<string> {
+	const fallback = path.join(app.getPath('userData'), 'backups');
+	try {
+		const settingsPath = getBackupSettingsPath();
+		if (fs.existsSync(settingsPath)) {
+			const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+			if (typeof settings.defaultBackupRoute === 'string' && settings.defaultBackupRoute) {
+				return settings.defaultBackupRoute;
+			}
+		}
+	} catch (err) {
+		console.error('[BACKUP] Error leyendo backup_settings.json:', err);
+	}
+	return fallback;
+}
+
+export async function setDefaultBackupRoute(route: string): Promise<string> {
+	if (!route || !path.isAbsolute(route)) {
+		throw new Error('Ruta de backup inválida');
+	}
+	fs.mkdirSync(route, { recursive: true });
+	fs.writeFileSync(
+		getBackupSettingsPath(),
+		JSON.stringify({ defaultBackupRoute: route }, null, 2),
+		'utf-8'
+	);
+	return route;
+}

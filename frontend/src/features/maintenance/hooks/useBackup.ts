@@ -27,6 +27,8 @@ export function useBackup() {
     fetchHistory();
   }, [fetchHistory]);
 
+
+
   const exportBackup = async (folderPath: string, password: string) => {
     if (!window.electronAPI?.exportBackup) return;
 
@@ -108,6 +110,21 @@ export function useBackup() {
     }
   };
 
+  const getDefaultBackupRoute = async () => {
+    if (!window.electronAPI?.getDefaultBackupRoute) {
+      return '';
+    }
+    const path = await window.electronAPI.getDefaultBackupRoute();
+    return path;
+  }
+
+  const setDefaultBackupRoute = async (route: string) => {
+    if (!window.electronAPI?.setDefaultBackupRoute) {
+      return route;
+    }
+    return await window.electronAPI.setDefaultBackupRoute(route);
+  }
+
   const lastSuccessExport = history.find(h => h.type === 'export' && h.status === 'success');
 
   return {
@@ -117,6 +134,8 @@ export function useBackup() {
     lastBackup: lastSuccessExport || null,
     exportBackup,
     importBackup,
-    refreshHistory: fetchHistory
+    refreshHistory: fetchHistory,
+    getDefaultBackupRoute,
+    setDefaultBackupRoute
   };
 }

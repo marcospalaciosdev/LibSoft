@@ -21,6 +21,8 @@ interface ElectronAPI {
   exportBackup: (folderPath: string, userPassword: string) => Promise<{ filePath: string; size: string }>;
   importBackup: (filePath: string, userPassword: string) => Promise<{ filePath: string; requiresReload?: boolean }>;
   getBackupHistory: () => Promise<BackupHistoryEntry[]>;
+  getDefaultBackupRoute: () => Promise<string>;
+  setDefaultBackupRoute: (route: string) => Promise<string>;
   showNotification: (title: string, body: string) => void;
   revealInFileExplorer: (filePath: string) => Promise<void>;
   saveAuthSession: (session: { token: string; user: unknown }) => Promise<void>;

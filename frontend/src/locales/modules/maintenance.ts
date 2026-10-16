@@ -132,6 +132,16 @@ export const es = {
       errorTitle: 'restauración fallida',
       error: 'no se pudo restaurar la copia de seguridad:',
     },
+
+    config: {
+      title: "configuración",
+      description: "configuración",
+      defaultBackupRoute: {
+        label: "ruta de backup por defecto",
+        placeholder: "seleccionar carpeta...",
+      },
+      defaultBackupRouteDescription: "ubicación por defecto donde se guardarán las copias de seguridad.",
+    },
   },
 
   dataImport: {

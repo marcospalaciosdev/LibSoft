@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { firstCap } from "@/shared/utils/firstCap";
 import { useTranslation } from "react-i18next";
 
-import { Button, Badge } from "@/shared/components/ui/index";
+import { Button, Badge, Input } from "@/shared/components/ui/index";
 import { useBackup } from "../hooks/useBackup";
 import { BackupPasswordModal } from "../components/BackupPasswordModal";
 
@@ -21,7 +21,15 @@ export function MaintenancePage() {
         history,
         exportBackup,
         importBackup,
+        getDefaultBackupRoute,
+        setDefaultBackupRoute
     } = useBackup();
+
+    const [defaultRoute, setDefaultRoute] = useState('');
+
+    useEffect(() => {
+        getDefaultBackupRoute().then(setDefaultRoute);
+    }, []);
 
     const [passwordModal, setPasswordModal] = useState<{
         isOpen: boolean;
@@ -63,6 +71,17 @@ export function MaintenancePage() {
         });
     };
 
+    const handleSelectRoute = async () => {
+        if (!window.electronAPI?.selectFolder) return;
+        const folder = await window.electronAPI.selectFolder();
+        if (!folder) return;
+        try {
+            setDefaultRoute(await setDefaultBackupRoute(folder));
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     const handlePasswordSubmit = async (password: string) => {
         if (passwordModal.mode === 'export') {
             await exportBackup(passwordModal.targetPath, password);
@@ -83,9 +102,9 @@ export function MaintenancePage() {
                 description={firstCap(t('maintenance.subtitle'))}
                 icon="build"
             />
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-5 ">
                 <div className="grid grid-cols-[70%_calc(30%-1rem)] gap-4">
-                    <div className="rounded-lg bg-[rgb(var(--color-bg))] p-6 flex flex-col gap-6">
+                    <div className="rounded-lg bg-[rgb(var(--color-bg))]  p-6 flex flex-col gap-6">
                         <div className="flex flex-col gap-2">
                             <div className="w-full flex items-center gap-3">
                                 <span className="material-symbols-outlined text-(length:--fs-icon-md) text-[rgb(var(--color-primary-500))]">
@@ -130,7 +149,7 @@ export function MaintenancePage() {
                                     </span>
                                 </Button>
                             </div>
-                            <div className="h-[275px] rounded-lg p-7 bg-[rgb(var(--color-bg-secondary))] flex flex-col gap-3">
+                            <div className="h-68.75 rounded-lg p-7 bg-[rgb(var(--color-bg-secondary))] flex flex-col gap-3">
                                 <span className="material-symbols-outlined text-(length:--fs-icon-md) text-[rgb(var(--color-text-muted))] bg-[rgb(var(--color-bg))] w-12 h-12 flex items-center justify-center rounded-full">
                                     cloud_upload
                                 </span>
@@ -140,7 +159,7 @@ export function MaintenancePage() {
                                     </span>
                                     <Button
                                         variant='ghost'
-                                        className='!p-1.5 aspect-square rounded-sm'
+                                        className='p-1.5! aspect-square rounded-sm'
                                         onClick={async () => {
                                             await handleRevealFile(lastBackup?.filePath ?? '');
                                         }}
@@ -201,6 +220,32 @@ export function MaintenancePage() {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div className="w-full flex flex-col">
+                            <Input
+                                className="w-1/2"
+                                inputClassName="rounded-md text-sm"
+                                label={
+                                    <div className="flex flex-row items-center gap-2">
+                                        <span>
+                                            {firstCap(t('maintenance.systemBackup.config.defaultBackupRoute.label'))}
+                                        </span>
+                                        <Button
+                                            variant="ghost"
+                                            className='p-1.5! aspect-square rounded-sm'
+                                            onClick={async () => { await handleSelectRoute() }}
+                                            isDisabled={exportStatus === 'loading' || importStatus === 'loading'}
+                                        >
+                                            <span className="material-symbols-outlined text-(length:--fs-icon-sm) text-[rgb(var(--color-text-muted))]">
+                                                folder
+                                            </span>
+                                        </Button>
+                                    </div>
+                                }
+                                value={defaultRoute}
+                                readOnly
+                                disabled
+                            />
                         </div>
                     </div>
                     <div className="rounded-lg bg-[rgb(var(--color-bg))] p-6">
