@@ -1,0 +1,31 @@
+body[data-theme="sepia"] {
+  --color-bg: 244 239 224;
+  --color-bg-secondary: 234 228 210;
+  --color-bg-tertiary: 226 219 198;
+  --color-bg-hover: 221 214 192;
+  --color-surface: 226 219 198;
+  --color-tab-even: 240 235 218;
+  --color-text: 67 53 32;
+  /* Marrón oscuro en vez de negro */
+  --color-text-muted: 120 100 75;
+  --color-text-soft: 160 140 115;
+  --color-text-hover: 43 32 15;
+  --color-text-hover-strong: 20 10 0;
+  --color-text-hover-primary: 150 110 50;
+  --color-border: 211 202 177;
+  --color-border-strong: 180 170 140;
+  --color-border-soft: 230 224 205;
+  --datetime-picker-indicator-color: rgb(120 100 75);
+}
+
+body[data-theme='sepia'] input[type='datetime-local'] {
+  color-scheme: light;
+}
+
+.theme-preview-sepia {
+  --p-bg: rgb(244 239 224);
+  --p-card: rgb(234 228 210);
+  --p-text: rgb(67 53 32);
+  --p-accent: rgb(37 99 235);
+  --p-border: rgb(211 202 177);
+}

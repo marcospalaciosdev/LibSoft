@@ -1,0 +1,4 @@
+node_modules
+dist
+public/css
+*.min.css

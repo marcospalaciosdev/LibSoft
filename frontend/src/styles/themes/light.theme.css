@@ -1,0 +1,32 @@
+body[data-theme="light"] {
+  --color-bg: 255 255 255;
+  --color-bg-secondary: 248 250 252;
+  --color-bg-tertiary: 241 244 247;
+  --color-bg-hover: 231 234 237;
+  --color-surface: 241 245 249;
+  --color-tab-even: 248 250 252;
+
+  --color-text: 15 23 42;
+  --color-text-muted: 100 116 139;
+  --color-text-soft: 148 163 184;
+
+  --color-text-hover: 51 65 85;
+  --color-text-hover-strong: 15 23 42;
+  --color-text-hover-primary: var(--color-primary);
+
+  --color-border: 226 232 240;
+  --color-border-strong: 203 213 225;
+  --color-border-soft: 241 245 249;
+}
+
+body[data-theme="light"] {
+  --datetime-picker-indicator-color: rgb(var(--color-text-muted));
+}
+
+.theme-preview-light {
+  --p-bg: rgb(255 255 255);
+  --p-card: rgb(248 250 252);
+  --p-text: rgb(15 23 42);
+  --p-accent: rgb(59 130 246);
+  --p-border: rgb(226 232 240);
+}

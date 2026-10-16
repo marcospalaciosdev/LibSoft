@@ -1,0 +1,274 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model audit_logs {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String?   @db.Uuid
+  module     String    @db.VarChar(50)
+  action     String    @db.VarChar(50)
+  entity_id  String?   @db.VarChar(100)
+  metadata   Json?
+  old_values Json?
+  new_values Json?
+  ip_address String?   @db.VarChar(45)
+  user_agent String?
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  user       users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ft_audit_logs_users")
+
+  @@index([created_at(sort: Desc)], map: "idx_audit_logs_created_at")
+  @@index([module], map: "idx_audit_logs_module")
+  @@index([user_id], map: "idx_audit_logs_user_id")
+}
+
+model book_copies {
+  copy_id          Int            @id @default(autoincrement())
+  book_id          BigInt
+  inventory_number String         @unique @db.VarChar(50)
+  isavailable      Boolean        @default(true)
+  created_at       DateTime?      @db.Timestamptz(6)
+  books            books          @relation(fields: [book_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_book_copies_books")
+  loans_copies     loans_copies[]
+}
+
+model books {
+  id                    BigInt                 @id @default(autoincrement())
+  title                 String
+  author                String
+  isbn                  String                 @unique
+  description           String?                @db.VarChar(255)
+  publisher             String?                @db.VarChar(100)
+  topographic_subject   String?                @db.VarChar(10)
+  dewey_category_id     String?                @db.VarChar(3)
+  created_at            DateTime?              @default(now()) @db.Timestamptz(6)
+  edition_date          DateTime?              @db.Date
+  dewey_classifications dewey_classifications? @relation(fields: [dewey_category_id], references: [code], onDelete: NoAction, onUpdate: NoAction, map: "fk_books_dewey_classification")
+  books_keywords        books_keywords[]
+  book_copies           book_copies[]
+}
+
+model books_keywords {
+  book_id    BigInt
+  keyword_id BigInt
+  books      books    @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  keywords   keywords @relation(fields: [keyword_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([book_id, keyword_id])
+}
+
+model borrowers {
+  id                      BigInt                    @id @default(autoincrement())
+  dni                     String                    @unique
+  first_name              String
+  email                   String?
+  phone                   String?
+  address                 String?                   @db.VarChar(100)
+  created_at              DateTime?                 @db.Timestamptz(6)
+  last_name               String?
+  status                  String?                   @default("enabled") @db.VarChar(10)
+  gender                  String?                   @db.VarChar(10)
+  borrower_status_history borrower_status_history[]
+  loans                   loans[]
+}
+
+model dewey_classifications {
+  code                               String                               @id @db.VarChar(3)
+  status                             dewey_classification_status?
+  books                              books[]
+  dewey_classifications_translations dewey_classifications_translations[]
+}
+
+model dewey_classifications_translations {
+  id                      BigInt                @id @default(autoincrement())
+  dewey_classification_id String                @db.VarChar(3)
+  lang_code               String                @db.VarChar(5)
+  name                    String
+  dewey_classifications   dewey_classifications @relation(fields: [dewey_classification_id], references: [code], onDelete: Cascade, onUpdate: NoAction, map: "fk_translations_dewey")
+  languages               languages             @relation(fields: [lang_code], references: [code], onUpdate: NoAction, map: "fk_translations_language")
+
+  @@unique([dewey_classification_id, lang_code], map: "uq_dewey_lang")
+}
+
+model faq_translations {
+  faq_id        String    @db.Uuid
+  language_code String    @db.VarChar(5)
+  question      String
+  answer        String
+  faqs          faqs      @relation(fields: [faq_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  languages     languages @relation(fields: [language_code], references: [code], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([faq_id, language_code])
+}
+
+model faqs {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code             String             @unique @db.VarChar(100)
+  category         String?            @db.VarChar(50)
+  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  faq_translations faq_translations[]
+}
+
+model keywords {
+  id             BigInt           @id @default(autoincrement())
+  keyword        String           @unique
+  books_keywords books_keywords[]
+}
+
+model languages {
+  code                               String                               @id @db.VarChar(5)
+  name                               String                               @db.VarChar(50)
+  is_active                          Boolean?                             @default(true)
+  dewey_classifications_translations dewey_classifications_translations[]
+  faq_translations                   faq_translations[]
+  roles_descriptions                 roles_descriptions[]
+  roles_names                        roles_names[]
+}
+
+model library_profile {
+  id            Int       @id @default(1)
+  library_name  String    @db.VarChar(150)
+  primary_email String?   @db.VarChar(100)
+  phone_number  String?   @db.VarChar(30)
+  address       String?
+  updated_at    DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model loans {
+  id           BigInt         @id @default(autoincrement())
+  borrower_id  BigInt?
+  loan_date    DateTime       @default(now()) @db.Timestamptz(6)
+  due_date     DateTime?      @db.Timestamptz(6)
+  description  String?        @db.VarChar(255)
+  type         String?        @db.VarChar(20)
+  user_id      String         @db.Uuid
+  users        users          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
+  borrowers    borrowers?     @relation(fields: [borrower_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  loans_copies loans_copies[]
+}
+
+model loans_copies {
+  id          BigInt       @id @default(autoincrement())
+  loan_id     BigInt?
+  copy_id     Int?
+  returned    Boolean?     @default(false)
+  return_date DateTime?    @db.Timestamptz(6)
+  book_copies book_copies? @relation(fields: [copy_id], references: [copy_id], onDelete: NoAction, onUpdate: NoAction)
+  loans       loans?       @relation(fields: [loan_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([copy_id], map: "idx_unique_active_copy")
+}
+
+model modules {
+  id          BigInt        @id @default(autoincrement())
+  name        String        @unique
+  created_at  DateTime?     @default(now()) @db.Timestamptz(6)
+  permissions permissions[]
+}
+
+model permissions {
+  id                BigInt              @id @default(autoincrement())
+  module_id         BigInt
+  name              String
+  description       String?
+  modules           modules             @relation(fields: [module_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_permissions_module")
+  roles_permissions roles_permissions[]
+
+  @@unique([module_id, name], map: "uq_module_permission")
+  @@index([module_id], map: "idx_permissions_module_id")
+}
+
+model roles {
+  id                 BigInt               @id @default(autoincrement())
+  name               String               @unique
+  color_rgb          String?
+  type               String?              @default("default") @db.VarChar(10)
+  roles_descriptions roles_descriptions[]
+  roles_names        roles_names[]
+  roles_permissions  roles_permissions[]
+  users              users[]
+}
+
+model roles_descriptions {
+  id          Int       @id @default(autoincrement())
+  description String    @db.VarChar(300)
+  role_id     BigInt
+  lng_id      String    @db.VarChar(5)
+  languages   languages @relation(fields: [lng_id], references: [code], onDelete: Cascade, onUpdate: NoAction, map: "fk_roles_descriptions_language")
+  roles       roles     @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_roles_descriptions_role")
+
+  @@unique([role_id, lng_id], map: "uq_roles_descriptions_role_lang")
+}
+
+model roles_names {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(20)
+  role_id   BigInt
+  lng_id    String    @db.VarChar(5)
+  languages languages @relation(fields: [lng_id], references: [code], onDelete: Cascade, onUpdate: NoAction, map: "fk_lng")
+  roles     roles     @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_role")
+
+  @@unique([role_id, lng_id], map: "uq_roles_names_role_lang")
+}
+
+model roles_permissions {
+  role_id       BigInt
+  permission_id BigInt
+  assigned_at   DateTime?   @default(now()) @db.Timestamptz(6)
+  permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_roles_permissions_permission")
+  roles         roles       @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_roles_permissions_role")
+
+  @@id([role_id, permission_id])
+  @@index([role_id], map: "idx_roles_permissions_role_id")
+}
+
+model session {
+  sid    String   @id @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamptz(6)
+
+  @@index([expire], map: "IDX_session_expire")
+}
+
+model users {
+  id                      String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username                String                    @unique
+  password                String
+  first_name              String
+  last_name               String
+  phone_number            String                    @db.VarChar(20)
+  email                   String?
+  role_id                 BigInt?
+  created_at              DateTime?                 @default(now()) @db.Timestamptz(6)
+  is_active               Boolean?                  @default(true)
+  avatar_url              String?
+  dni                     String?                   @db.VarChar(10)
+  address                 String?                   @db.VarChar(100)
+  audit_logs              audit_logs[]
+  borrower_status_history borrower_status_history[]
+  loans                   loans[]
+  role                    roles?                    @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model borrower_status_history {
+  id          Int       @id @default(autoincrement())
+  borrower_id BigInt
+  action      String    @db.VarChar(20)
+  reason      String
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  user_id     String    @db.Uuid
+  borrowers   borrowers @relation(fields: [borrower_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users       users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum dewey_classification_status {
+  in_use
+  unassigned
+  discontinued
+}

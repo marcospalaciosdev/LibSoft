@@ -1,0 +1,30 @@
+[
+  {
+    "id": "1",
+    "category": "loans",
+    "icon": "swap_horiz",
+    "label": "Register Return",
+    "description": "Press the 'Handle Return' button on the [loans page](/loans/all) for the loan you wish to repay."
+  },
+  {
+    "id": "3",
+    "category": "borrowers",
+    "icon": "person_search",
+    "label": "Add New Members",
+    "description": "To register a new borrower in the library, go to the [add borrower](/borrowers/new) section."
+  },
+  {
+    "id": "4",
+    "category": "books",
+    "icon": "book",
+    "label": "Inventory Control",
+    "description": "Check available copies and book stocks in our [book list](/books)."
+  },
+  {
+    "id": "5",
+    "category": "settings",
+    "icon": "settings",
+    "label": "Account Preferences",
+    "description": "Change the system language and customize the visual theme in the [configuration page](/settings)."
+  }
+]

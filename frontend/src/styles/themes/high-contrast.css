@@ -1,0 +1,33 @@
+body[data-theme="high-contrast"] {
+  --color-bg: 0 0 0;
+  --color-bg-secondary: 20 20 20;
+  --color-bg-tertiary: 30 30 30;
+  --color-bg-hover: 254 240 138;
+  /* Amarillo cambia el fondo al pasar el mouse */
+  --color-surface: 30 30 30;
+  --color-tab-even: 10 10 10;
+  --color-text: 255 255 255;
+  --color-text-muted: 254 240 138;
+  /* Texto secundario resalta en amarillo */
+  --color-text-soft: 200 200 200;
+  --color-text-hover: 0 0 0;
+  --color-text-hover-strong: 0 0 0;
+  --color-text-hover-primary: 254 240 138;
+  --color-border: 20 20 20;
+  /* Bordes gruesos y marcados */
+  --color-border-strong: 255 255 255;
+  --color-border-soft: 100 100 100;
+  --datetime-picker-indicator-color: rgb(254 240 138);
+}
+
+body[data-theme='high-contrast'] input[type='datetime-local'] {
+  color-scheme: dark;
+}
+
+.theme-preview-high-contrast {
+  --p-bg: rgb(0 0 0);
+  --p-card: rgb(20 20 20);
+  --p-text: rgb(255 255 255);
+  --p-accent: rgb(254 240 138);
+  --p-border: rgb(255 255 255);
+}

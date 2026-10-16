@@ -1,0 +1,77 @@
+{
+  "name": "libsoft",
+  "version": "1.0.0",
+  "description": "Sistema de gestión bibliotecaria LibSoft",
+  "main": "electron/dist-electron/main.js",
+  "scripts": {
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:electron": "wait-on http://localhost:3001 tcp:localhost:5000 && tsc -p electron/tsconfig.json && electron .",
+    "dev": "concurrently -k -p \"[{name}]\" -c \"cyan.bold,yellow.bold,magenta.bold\" -n \"FRONTEND,BACKEND,ELECTRON\" \"npm:dev:frontend\" \"npm:dev:backend\" \"npm:dev:electron\"",
+    "build:frontend": "npm run build --prefix frontend",
+    "build:backend": "npm run build --prefix backend",
+    "build:electron": "tsc -p electron/tsconfig.json",
+    "build": "npm run build:frontend && npm run build:backend && npm run build:electron",
+    "prisma:generate": "npm run prisma:generate --prefix backend",
+    "db:seed": "tsx watch src/db/prisma/seed.ts --prefix backend",
+    "db:bootstrap": "npm run db:bootstrap --prefix backend",
+    "build:all": "npm run build:frontend && npm run build:backend && npm run build:electron || exit 0",
+    "dist": "npm run build:all && electron-builder --win --publish never"
+  },
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared/*"
+  ],
+  "build": {
+    "appId": "com.libsoft.app",
+    "productName": "LibSoft",
+    "npmRebuild": false,
+    "directories": {
+      "buildResources": "resources",
+      "output": "dist"
+    },
+    "files": [
+      "electron/dist-electron/**/*",
+      "backend/dist/**/*",
+      "backend/node_modules/**/*",
+      "backend/prisma/**/*",
+      "frontend/dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/pgsql",
+        "to": "pgsql"
+      }
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "resources/app.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "LibSoft",
+      "installerIcon": "resources/app.ico",
+      "uninstallerIcon": "resources/app.ico"
+    }
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.4",
+    "electron": "^43.0.0",
+    "electron-builder": "^26.15.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3",
+    "wait-on": "^9.1.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

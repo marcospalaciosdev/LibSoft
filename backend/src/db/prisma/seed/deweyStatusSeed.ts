@@ -1,0 +1,1 @@
+export type DeweySeedStatus = 'in_use' | 'unassigned' | 'discontinued';

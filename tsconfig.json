@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "downlevelIteration": true,
+    },
+    "files": [],
+    "references": [
+        {
+            "path": "../frontend"
+        },
+        {
+            "path": "../electron"
+        },
+        {
+            "path": "../backend"
+        }
+    ]
+}

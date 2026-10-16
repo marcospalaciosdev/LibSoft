@@ -1,0 +1,266 @@
+[
+    {
+        "code": "faq_loans_how_to_loan",
+        "category": "LOANS",
+        "question": {
+            "es": "¿Cómo registrar la salida de un libro a un socio?",
+            "en": "How to register a book loan?"
+        },
+        "answer": {
+            "es": "Para registrar un prestamo debes dirigirte al [Dashboard de Prestamos](/loans) o bien a la [seccion de prestamos](/loans/all) y presionar el boton de registrar prestamo. Se abrira una pagina con el formulario para registrar el prestamo.",
+            "en": "To register a loan, go to the [Loans Dashboard](/loans) or the [Loans Section](/loans/all) and press the register loan button. A page will open with the form to register the loan."
+        }
+    },
+    {
+        "code": "faq_loans_how_to_return",
+        "category": "LOANS",
+        "question": {
+            "es": "¿Cómo procesar la devolución de un ejemplar en el sistema?",
+            "en": "How to process the return of a book in the system?"
+        },
+        "answer": {
+            "es": "Para procesar la devolucion de un libro debes dirigirte al [Dashboard de Prestamos](/loans) o bien a la [seccion de prestamos](/loans/all) presionar el menu desplegable que hay en cada fila de la tabla y presionar el boton de Gestionar devolucion. Marca las copias que deseas devolver y presione el boton de confirmar.",
+            "en": "To process the return of a book, go to the [Loans Dashboard](/loans) or the [Loans Section](/loans/all), press the dropdown menu in each table row, and select the 'Manage Return' button. Mark the copies you wish to return and press the confirm button."
+        }
+    },
+    {
+        "code": "faq_loans_history",
+        "category": "LOANS",
+        "question": {
+            "es": "¿Cómo consultar los préstamos activos y vencidos de un socio?",
+            "en": "How to check a borrower's active and overdue loans?"
+        },
+        "answer": {
+            "es": "Para consultar el historial de prestamos de un socio debes ir a la seccion de [Socios](/borrowers), buscar el socio en cuestion y presionar el boton de gestionar. Luego en la pagina del socio presiona la seccion de prestamos. Te aparecera una tabla con todos los prestamos del socio, tanto los activos como los historicos.",
+            "en": "To consult a borrower's loan history, go to the [Borrowers section](/borrowers), find the borrower in question, and press the manage button. Then, on the borrower's page, select the Loans Section. You will see a table with all the borrower's loans, both active and historical."
+        }
+    },
+    {
+        "code": "faq_loans_how_to_export_reports",
+        "category": "LOANS",
+        "question": {
+            "es": "¿Cómo generar un reporte en PDF de un préstamo?",
+            "en": "How to generate a PDF report of a loan?"
+        },
+        "answer": {
+            "es": "Para exportar un reporte de un prestamo en particular, debes dirigirte al [Dashboard de Prestamos](/loans) y presionar el boton de 'Descargar Comprobante' en el menu desplegable del prestamo, se te abrira una ventana donde podras configurar el reporte y descargarlo en PDF o Excel.",
+            "en": "To export a report for a specific loan, go to the [Loans Dashboard](/loans) and press the 'Download Receipt' button in the loan's dropdown menu. A window will open where you can configure the report and download it as a PDF or Excel file."
+        }
+    },
+    {
+        "code": "faq_borrowers_how_to_create",
+        "category": "BORROWERS",
+        "question": {
+            "es": "¿Cómo dar de alta a un nuevo socio en el sistema?",
+            "en": "How to register a new borrower in the system?"
+        },
+        "answer": {
+            "es": "Para registrar un nuevo socio debes dirigirte a la seccion de [Socios](/borrowers) y presionar el boton de ['Agregar Socio'](/borrowers/new). Se abrira una pagina con el formulario para registrar el socio.",
+            "en": "To register a new borrower, go to the [Borrowers section](/borrowers) and press the ['Add Borrower'](/borrowers/new) button. A page will open with the form to register the borrower."
+        }
+    },
+    {
+        "code": "faq_borrowers_how_to_edit",
+        "category": "BORROWERS",
+        "question": {
+            "es": "¿Cómo actualizar los datos de contacto o la condición de un socio?",
+            "en": "How to update a borrower's contact information or status?"
+        },
+        "answer": {
+            "es": "Para editar los datos de un socio, debes ir a la seccion de [Socios](/borrowers), buscar el socio en cuestion y presionar el boton de gestionar. Luego en la pagina del socio presiona la pestaña de editar.",
+            "en": "To edit a borrower's information, go to the [Borrowers section](/borrowers), find the borrower in question, and press the manage button. Then, on the borrower's page, select the edit tab."
+        }
+    },
+    {
+        "code": "faq_borrowers_how_to_suspend",
+        "category": "BORROWERS",
+        "question": {
+            "es": "¿Cómo cambiar el estado de un socio a suspendido?",
+            "en": "How to change a borrower's status to suspended?"
+        },
+        "answer": {
+            "es": "Para suspender un socio, debes ir a la seccion de [Socios](/borrowers), buscar el socio en cuestion y presionar el boton de gestionar. Luego en la pagina del socio presiona la pestaña de editar y cambia el estado del socio a suspendido.",
+            "en": "To suspend a borrower, go to the [Borrowers section](/borrowers), find the borrower in question, and press the manage button. Then, on the borrower's page, select the edit tab and change the borrower's status to suspended."
+        }
+    },
+    {
+        "code": "faq_borrowers_how_to_check_debt",
+        "category": "BORROWERS",
+        "question": {
+            "es": "¿Cómo verificar si un socio tiene material adeudado?",
+            "en": "How to verify if a borrower has overdue material?"
+        },
+        "answer": {
+            "es": "Para verificar si un socio tiene material adeudado, debes ir a la seccion de [Socios](/borrowers), buscar el socio en cuestion y presionar el boton de gestionar. Luego en la pagina del socio presiona la pestaña de prestamos. Te aparecera una tabla con todos los prestamos del socio, tanto los activos como los historicos. Filtra por los activos.",
+            "en": "To check if a borrower has overdue material, go to the [Borrowers section](/borrowers), find the borrower in question, and press the manage button. Then, on the borrower's page, select the loans tab. You will see a table with all the borrower's loans, both active and historical. Filter by active loans."
+        }
+    },
+    {
+        "code": "faq_borrowers_how_to_export_reports",
+        "category": "BORROWERS",
+        "question": {
+            "es": "¿Cómo generar un reporte en PDF de un socio?",
+            "en": "How to generate a PDF report of a borrower?"
+        },
+        "answer": {
+            "es": "Para exportar un reporte de un socio, debes ir a la seccion de [Socios](/borrowers), buscar el socio en cuestion y presionar el boton de gestionar. Luego, dirigete a la seccion de prestamos y presiona el boton de 'Descargar Reporte'.",
+            "en": "To export a report of a borrower, go to the [Borrowers section](/borrowers), find the borrower in question, and press the manage button. Then, on the borrower's loans page, click the 'Download Report' button."
+        }
+    },
+    {
+        "code": "faq_books_how_to_add_book",
+        "category": "BOOKS",
+        "question": {
+            "es": "¿Cómo dar de alta un nuevo libro o título en el catálogo?",
+            "en": "How to register a new book or title in the catalog?"
+        },
+        "answer": {
+            "es": "Para agregar un nuevo libro debes dirigirte a la seccion de [Libros](/books) y presionar el boton de registrar libro. Se abrira una pagina con el formulario para registrar el libro.",
+            "en": "To add a new book, go to the [Books section](/books) and press the register book button. A page will open with the form to register the book."
+        }
+    },
+    {
+        "code": "faq_books_how_to_add_or_delete_copy",
+        "category": "BOOKS",
+        "question": {
+            "es": "¿Cómo agregar o dar de baja ejemplares físicos (stock) de un libro?",
+            "en": "How to add or remove physical copies (stock) of a book?"
+        },
+        "answer": {
+            "es": "Para agregar o eliminar copias de un libro, debes ir a la seccion de [Libros](/books), buscar el libro en cuestion y presionar el boton de gestionar. Luego en la pagina del libro presiona la pestaña de ejemplares.",
+            "en": "To add or remove physical copies (stock) of a book, go to the [Books section](/books), find the book in question, and press the manage button. Then, on the book's page, select the copies tab."
+        }
+    },
+    {
+        "code": "faq_books_how_to_edit_book_data",
+        "category": "BOOKS",
+        "question": {
+            "es": "¿Cómo modificar los datos de un libro (autor, editorial, ISBN, categoría)?",
+            "en": "How to modify the data of a book (author, publisher, ISBN, category)?"
+        },
+        "answer": {
+            "es": "Para editar los datos de un libro, debes ir a la seccion de [Libros](/books), buscar el libro en cuestion y presionar el boton de gestionar. Luego en la pagina del libro presiona la pestaña de editar.",
+            "en": "To edit a book's data, go to the [Books section](/books), find the book in question, and press the manage button. Then, on the book's page, select the edit tab."
+        }
+    },
+    {
+        "code": "faq_books_how_to_search",
+        "category": "BOOKS",
+        "question": {
+            "es": "¿Cómo buscar libros por ISBN, numero de inventario, asigntura topografica o ubicación en estantería?",
+            "en": "How to search for books by ISBN, inventory number, call number, or shelf location?"
+        },
+        "answer": {
+            "es": "Para buscar libros, debes ir a la seccion de [Libros](/books) y utilizar el buscador con el boton de la lupa en la cabezera de la pagina. Puedes buscar por ISBN, numero de inventario, asignatura topografica o ubicacion en estanteria.",
+            "en": "To search for books, go to the [Books section](/books) and use the search bar with the magnifying glass icon in the header. You can search by ISBN, inventory number, call number, or shelf location."
+        }
+    },
+    {
+        "code": "faq_audit_how_to_consult_logs",
+        "category": "AUDIT",
+        "question": {
+            "es": "¿Cómo revisar el historial de cambios y logs de auditoría de una operación?",
+            "en": "How to review the change history and audit logs of an operation?"
+        },
+        "answer": {
+            "es": "Para consultar el historial de logs de auditoria, debes ir a la seccion de [Auditoria](/audit). Encontrarás una tabla con todos los logs de auditoría, donde puedes usar los filtros para buscar la información que necesites.",
+            "en": "To check the audit log history, go to the [Audit section](/audit). You will find a table with all the audit logs, where you can use the filters to find the information you need."
+        }
+    },
+    {
+        "code": "faq_audit_identify",
+        "category": "AUDIT",
+        "question": {
+            "es": "¿Cómo saber qué usuario/bibliotecario realizó una modificación específica?",
+            "en": "How to know which user/librarian performed a specific modification?"
+        },
+        "answer": {
+            "es": "Para identificar que usuario realizo una modificacion, debes ir a la seccion de [Auditoria](/audit) y buscar el log correspondiente. Para agilizar la busqueda utilice los filtros disponibles, como la fecha, el modulo o la accion realizada.",
+            "en": "To identify which user performed a modification, go to the [Audit section](/audit) and look for the corresponding log. Use the available filters, such as date, module, or action performed, to speed up your search."
+        }
+    },
+    {
+        "code": "faq_users_how_to_create",
+        "category": "USERS",
+        "question": {
+            "es": "¿Cómo dar de alta un nuevo usuario (bibliotecario) con acceso al sistema?",
+            "en": "How to register a new user (librarian) with system access?"
+        },
+        "answer": {
+            "es": "Para agregar un nuevo usuario debes ir a la seccion de [Usuarios](/users) y presionar el boton de registrar usuario. Se abrira una pagina con el formulario para registrar el usuario. Esta funcionalidad solo esta disponible para usuarios con rol de administrador.",
+            "en": "To add a new user, go to the [Users section](/users) and click the register user button. A page will open with the form to register the user. This functionality is only available to users with the administrator role."
+        }
+    },
+    {
+        "code": "faq_users_how_to_manage_roles",
+        "category": "USERS",
+        "question": {
+            "es": "¿Cómo gestionar los roles o permisos de los usuarios?",
+            "en": "How to manage user roles or permissions?"
+        },
+        "answer": {
+            "es": "Para editar los permisos de los usuarios debes ir a la seccion de [Configuracion](/settings) y presionar el boton de editar en la seccion de permisos. Se abrira una tabla en la que podras gestionar los permisos de cada rol. Esta funcionalidad solo esta disponible para usuarios con rol de administrador.",
+            "en": "To edit user permissions, go to the [Settings section](/settings) and click the edit button in the permissions section. A table will open where you can manage the permissions of each role. This functionality is only available to users with the administrator role."
+        }
+    },
+    {
+        "code": "faq_maintenance_how_to_export_backups",
+        "category": "MAINTENANCE",
+        "question": {
+            "es": "¿Cómo exportar un backup del sistema?",
+            "en": "How to export a system backup?"
+        },
+        "answer": {
+            "es": "Para exportar una copia de seguridad de la base de datos, debes ir a la seccion de [Mantenimiento](/maintenance) y presionar el boton de exportar backup. Esta funcionalidad solo esta disponible para usuarios con rol de administrador.",
+            "en": "To export a backup of the database, go to the [Maintenance section](/maintenance) and click the export backup button. This functionality is only available to users with the administrator role."
+        }
+    },
+    {
+        "code": "faq_maintenance_how_to_import_backups",
+        "category": "MAINTENANCE",
+        "question": {
+            "es": "¿Cómo importar un backup del sistema?",
+            "en": "How to import a system backup?"
+        },
+        "answer": {
+            "es": "Para importar una copia de seguridad de la base de datos, debes ir a la seccion de [Mantenimiento](/maintenance) y presionar el boton de importar backup. Esta funcionalidad solo esta disponible para usuarios con rol de administrador.",
+            "en": "To import a backup of the database, go to the [Maintenance section](/maintenance) and click the import backup button. This functionality is only available to users with the administrator role."
+        }
+    },
+    {
+        "code": "faq_settings_how_to_change_language",
+        "category": "SETTINGS",
+        "question": {
+            "es": "¿Cómo cambiar el idioma del sistema?",
+            "en": "How to change the system language?"
+        },
+        "answer": {
+            "es": "Para cambiar el idioma de la aplicacion, debes ir a la seccion de [Configuracion](/settings). Ahi, presiona el menu desplegable que dice 'Idioma del sistema' y selecciona el idioma deseado.",
+            "en": "To change the application language, go to the [Settings section](/settings). Then, click the dropdown menu that says 'System language' and select the desired language."
+        }
+    },
+    {
+        "code": "faq_settings_how_to_change_timezone",
+        "category": "SETTINGS",
+        "question": {
+            "es": "¿Cómo cambiar la zona horaria del sistema?",
+            "en": "How to change the system timezone?"
+        },
+        "answer": {
+            "es": "Para cambiar la zona horaria de la aplicacion, debes ir a la seccion de [Configuracion](/settings). Ahi, presiona el menu desplegable que dice 'Zona horaria' y selecciona la zona horaria deseada.",
+            "en": "To change the application timezone, go to the [Settings section](/settings). Then, click the dropdown menu that says 'Timezone' and select the desired timezone."
+        }
+    },
+    {
+        "code": "faq_settings_how_to_change_color_theme",
+        "category": "SETTINGS",
+        "question": {
+            "es": "¿Cómo cambiar el tema de colores del  del sistema?",
+            "en": "How to change the system color theme?"
+        },
+        "answer": {
+            "es": "Para cambiar el tema de colores de la aplicacion, debes ir a la seccion de [Configuracion](/settings). Ahi, en la seccion de apariencia seleccione el tema deseado.",
+            "en": "To change the application color theme, go to the [Settings section](/settings). Then, in the appearance section, select the desired theme."
+        }
+    }
+]

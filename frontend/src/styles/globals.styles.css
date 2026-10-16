@@ -1,0 +1,104 @@
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  src: url('../../public/fonts/Material_Symbols_Outlined/MaterialSymbolsOutlined-VariableFont_FILL\,GRAD\,opsz\,wght.ttf');
+}
+
+@font-face {
+  font-family: 'Google Sans';
+  src: url('../../public/fonts/Google_Sans/GoogleSans-VariableFont_GRAD\,opsz\,wght.ttf');
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('../../public/fonts/Plus_Jakarta_Sans//PlusJakartaSans-VariableFont_wght.ttf');
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-subtle {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+
+@keyframes horizontal-shake {
+  0% {
+    transform: translateX(0px);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
+
+  75% {
+    transform: translateX(-5px);
+  }
+
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.3s ease forwards;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(var(--color-text-muted), 0.1);
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(var(--color-text-muted), 0.2);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--color-primary-500), 0.5);
+}

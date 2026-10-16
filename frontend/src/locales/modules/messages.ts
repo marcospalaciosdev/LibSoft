@@ -1,0 +1,111 @@
+export const en = {
+  errors: {
+    notFound: 'not found',
+    pageNotFound: 'page not found',
+    returnError: 'error processing return',
+    returnUnitError: 'error returning unit',
+    bookNotFound: 'book not found',
+    searchError: 'search error',
+    loadError: 'error loading data',
+    saveError: 'error saving changes',
+    deleteError: 'error deleting item',
+    unexpectedError: 'unexpected error occurred',
+
+    isRequired: {
+      firstName: 'name is required',
+      lastName: 'last name is required',
+      email: 'email is required',
+      phoneNumber: 'phone number is required',
+      gender: 'gender is required',
+      address: 'address is required',
+      dni: 'DNI is required',
+
+      title: 'title is required',
+      author: 'author is required',
+      isbn: 'ISBN is required',
+      publisher: 'publisher is required',
+      year: 'year is required',
+      category: 'category is required',
+      tags: 'at least one tag is required',
+      topographicSubject: 'topographic subject is required',
+    },
+    isValid: {
+      year: 'year must be valid',
+    },
+  },
+  success: {
+    saved: 'changes saved successfully',
+    deleted: 'item deleted successfully',
+    created: 'item created successfully',
+    updated: 'item updated successfully',
+  },
+  warnings: {
+    confirmDelete: 'are you sure you want to delete this item?',
+    unsavedChanges: 'you have unsaved changes',
+  },
+  ui: {
+    notifications: 'notifications',
+    darkMode: 'dark mode',
+    controlPanel: 'control panel',
+    systemUtilities: 'system utilities',
+    backToHome: 'back to home',
+    loading: 'loading...',
+    noData: 'no data available',
+  },
+} as const;
+
+export const es = {
+  errors: {
+    notFound: 'no encontrado',
+    pageNotFound: 'página no encontrada',
+    returnError: 'error al devolver el préstamo',
+    returnUnitError: 'error al devolver la unidad',
+    bookNotFound: 'libro no encontrado',
+    searchError: 'error en búsqueda',
+    loadError: 'error al cargar los datos',
+    saveError: 'error al guardar los cambios',
+    deleteError: 'error al eliminar el ítem',
+    unexpectedError: 'ocurrió un error inesperado',
+
+    isRequired: {
+      firstName: 'se necesita el nombre',
+      lastName: 'se necesita el apellido',
+      email: 'se necesita el correo electrónico',
+      phoneNumber: 'se necesita el número de teléfono',
+      gender: 'se necesita el género',
+      address: 'se necesita la dirección',
+      dni: 'se necesita el DNI',
+
+      title: 'se necesita el título',
+      author: 'se necesita el autor',
+      isbn: 'se necesita el ISBN',
+      publisher: 'se necesita la editorial',
+      year: 'se necesita el año',
+      category: 'se necesita la categoría',
+      tags: 'se necesita al menos una palabra clave',
+      topographicSubject: 'se necesita la asignatura topográfica',
+    },
+    isValid: {
+      year: 'el año debe ser válido',
+    },
+  },
+  success: {
+    saved: 'cambios guardados exitosamente',
+    deleted: 'ítem eliminado exitosamente',
+    created: 'ítem creado exitosamente',
+    updated: 'ítem actualizado exitosamente',
+  },
+  warnings: {
+    confirmDelete: '¿Estás seguro de que deseas eliminar este ítem?',
+    unsavedChanges: 'tienes cambios sin guardar',
+  },
+  ui: {
+    notifications: 'notificaciones',
+    darkMode: 'modo oscuro',
+    controlPanel: 'panel de control',
+    systemUtilities: 'utilidades del sistema',
+    backToHome: 'volver al inicio',
+    loading: 'cargando...',
+    noData: 'sin datos disponibles',
+  },
+} as const;

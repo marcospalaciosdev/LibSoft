@@ -1,0 +1,31 @@
+body[data-theme="nord"] {
+  --color-bg: 46 52 64;
+  --color-bg-secondary: 59 66 82;
+  --color-bg-tertiary: 52 59 72;
+  --color-bg-hover: 76 86 106;
+  --color-surface: 67 76 94;
+  --color-tab-even: 43 48 59;
+  --color-text: 236 239 244;
+  --color-text-muted: 143 188 187;
+  /* Toque verde agua gélido */
+  --color-text-soft: 216 222 233;
+  --color-text-hover: 255 255 255;
+  --color-text-hover-strong: 255 255 255;
+  --color-text-hover-primary: 136 192 208;
+  --color-border: 76 86 106;
+  --color-border-strong: 143 188 187;
+  --color-border-soft: 59 66 82;
+  --datetime-picker-indicator-color: rgb(143 188 187);
+}
+
+body[data-theme='nord'] input[type='datetime-local'] {
+  color-scheme: dark;
+}
+
+.theme-preview-nord {
+  --p-bg: rgb(46 52 64);
+  --p-card: rgb(59 66 82);
+  --p-text: rgb(236 239 244);
+  --p-accent: rgb(143 188 187);
+  --p-border: rgb(76 86 106);
+}

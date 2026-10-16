@@ -1,0 +1,30 @@
+[
+  {
+    "id": "1",
+    "category": "loans",
+    "icon": "swap_horiz",
+    "label": "Registrar Devolución",
+    "description": "Presiona el boton 'Dev. Rapida' en la [pagina de prestamos](/loans/all) en el prestamo que se desea devolver."
+  },
+  {
+    "id": "3",
+    "category": "borrowers",
+    "icon": "person_search",
+    "label": "Agregar Nuevos Socios",
+    "description": "Para registrar a un nuevo socio en la biblioteca, ve a la sección para [añadir socio](/borrowers/new)."
+  },
+  {
+    "id": "4",
+    "category": "books",
+    "icon": "book",
+    "label": "Control de Inventario",
+    "description": "Revisa las copias disponibles y el stock de títulos en nuestra [lista de libros](/books)."
+  },
+  {
+    "id": "5",
+    "category": "settings",
+    "icon": "settings",
+    "label": "Preferencias de la Cuenta",
+    "description": "Cambia el idioma del sistema y personaliza el tema visual en la [página de configuración](/settings)."
+  }
+]

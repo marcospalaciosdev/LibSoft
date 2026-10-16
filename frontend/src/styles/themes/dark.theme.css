@@ -1,0 +1,32 @@
+body[data-theme="dark"] {
+  --color-bg: 15 23 42;
+  --color-bg-secondary: 30 41 59;
+  --color-bg-tertiary: 20 30 48;
+  --color-bg-hover: 51 65 85;
+  --color-surface: 51 65 85;
+  --color-tab-even: 15, 24, 43;
+
+  --color-text: 227 227 227;
+  --color-text-muted: 148 163 184;
+  --color-text-soft: 100 116 139;
+
+  --color-text-hover: 226 232 240;
+  --color-text-hover-strong: 255 255 255;
+  --color-text-hover-primary: var(--color-primary-300);
+
+  --color-border: 51 65 85;
+  --color-border-strong: 71 85 105;
+  --color-border-soft: 30 41 59;
+}
+
+body[data-theme="dark"] {
+  --datetime-picker-indicator-color: rgb(var(--color-text));
+}
+
+.theme-preview-dark {
+  --p-bg: rgb(15 23 42);
+  --p-card: rgb(30 41 59);
+  --p-text: rgb(227 227 227);
+  --p-accent: rgb(96 165 250);
+  --p-border: rgb(51 65 85);
+}

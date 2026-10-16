@@ -1,0 +1,32 @@
+body[data-theme="dracula"] {
+  --color-bg: 40 42 54;
+  --color-bg-secondary: 33 34 44;
+  --color-bg-tertiary: 30 31 41;
+  --color-bg-hover: 68 71 90;
+  --color-surface: 68 71 90;
+  --color-tab-even: var(--color-bg-secondary);
+  --color-text: 248 248 242;
+  --color-text-muted: 189 147 249;
+  /* Violeta Drácula emblemático */
+  --color-text-soft: 255 121 198;
+  /* Rosado/Magenta */
+  --color-text-hover: 255 255 255;
+  --color-text-hover-strong: 255 255 255;
+  --color-text-hover-primary: 255 121 198;
+  --color-border: 68 71 90;
+  --color-border-strong: 98 114 164;
+  --color-border-soft: 33 34 44;
+  --datetime-picker-indicator-color: rgb(189 147 249);
+}
+
+body[data-theme='dracula'] input[type='datetime-local'] {
+  color-scheme: dark;
+}
+
+.theme-preview-dracula {
+  --p-bg: rgb(40 42 54);
+  --p-card: rgb(33 34 44);
+  --p-text: rgb(248 248 242);
+  --p-accent: rgb(189 147 249);
+  --p-border: rgb(68 71 90);
+}

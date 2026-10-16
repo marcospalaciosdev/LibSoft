@@ -1,0 +1,51 @@
+{
+  "scripts": {
+    "postinstall": "prisma generate",
+    "dev": "tsx watch src/app.ts",
+    "build": "tsc -p tsconfig.json",
+    "prisma:generate": "prisma generate",
+    "db:seed": "prisma db seed",
+    "db:bootstrap": "tsx src/db/bootstrap.ts",
+    "db:migrate": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:reset": "prisma migrate reset",
+    "db:capture": "tsx scripts/capture-migration.mts"
+  },
+  "build": {
+    "asar": true,
+    "extraFiles": [
+      {
+        "from": "prisma",
+        "to": "prisma",
+        "filter": [
+          "schema.prisma"
+        ]
+      }
+    ]
+  },
+  "dependencies": {
+    "@LibSoft/shared-constants": "*",
+    "@LibSoft/shared-types": "*",
+    "@prisma/client": "^6.16.1",
+    "@types/cors": "^2.8.19",
+    "bcryptjs": "^3.0.0",
+    "buffer": "^6.0.3",
+    "camelcase-keys": "^10.0.2",
+    "connect-pg-simple": "^10.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "pg": "^8.20.0",
+    "prisma": "^6.16.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/connect-pg-simple": "^7.0.3",
+    "@types/express": "^5.0.6",
+    "@types/express-session": "^1.19.0",
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.21.0"
+  }
+}

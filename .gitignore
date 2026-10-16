@@ -1,0 +1,140 @@
+# ==========================================
+# 1. Dependencias y Monorepo
+# ==========================================
+node_modules/
+**/node_modules/
+.pnpm-store/
+.npm/
+
+# ==========================================
+# 2. Archivos de registro y depuración (Logs)
+# ==========================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==========================================
+# 3. Compilaciones y Bundlers (Vite / Backend / Electron)
+# ==========================================
+dist/
+**/dist/
+backend/dist/
+dist-ssr/
+**/dist-ssr/
+dist-electron/
+**/dist-electron/
+electron/dist-electron/
+out/
+**/out/
+release/
+**/release/
+build/
+**/build/
+temp-appjson/
+.vite/
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+**/*.tsbuildinfo
+
+# Artefactos de empaquetado de Electron Builder
+win-unpacked/
+mac/
+linux-unpacked/
+builder-debug.yml
+builder-effective-config.yaml
+*.blockmap
+
+# ==========================================
+# 4. Variables de entorno y Credenciales
+# ==========================================
+.env
+.env.*
+.env.local
+.env.*.local
+!.env.example
+!.env.*.example
+
+# Certificados y claves (común al firmar ejecutables de Electron)
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+
+# ==========================================
+# 5. Base de Datos, Backups y Binarios locales
+# ==========================================
+# SQLite / archivos de bases de datos embebidas
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Binarios locales de PostgreSQL y descargas intermedias
+resources/pgsql/
+resources/pgsql/**
+resources/pgsql.zip
+
+# Backups y dumps de base de datos (pg_dump)
+backup_library.dump
+backup-library.dump
+*.dump
+backup*.sql
+
+# ==========================================
+# 6. Herramientas de calidad de código y Tests
+# ==========================================
+.eslintcache
+.prettiercache
+.stylelintcache
+coverage/
+*.lcov
+.nyc_output/
+
+# ==========================================
+# 7. Editores e IDEs (VS Code, JetBrains, Visual Studio)
+# ==========================================
+.vscode/
+vscode/
+.VSCodeCounter/
+.idea/
+.vs/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swo
+*.swn
+*~
+
+# ==========================================
+# 8. Archivos generados por el Sistema Operativo
+# ==========================================
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ==========================================
+# 9. Archivos y módulos específicos del proyecto
+# ==========================================
+WINDOWS_APP_ROADMAP.md
+frontend/src/features/businessCanvas/
+frontend/src/locales/modules/businessCanvas.ts
