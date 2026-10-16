@@ -138,3 +138,5 @@ $RECYCLE.BIN/
 WINDOWS_APP_ROADMAP.md
 frontend/src/features/businessCanvas/
 frontend/src/locales/modules/businessCanvas.ts
+
+ELECTRON_BUILDER_CONFIG.md
