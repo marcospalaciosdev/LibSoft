@@ -26,6 +26,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getBackupHistory: () => ipcRenderer.invoke('get-backup-history'),
     getDefaultBackupRoute: () => ipcRenderer.invoke('get-default-backup-path'),
     setDefaultBackupRoute: (route: string) => ipcRenderer.invoke('set-default-backup-path', route),
+    getBackupConfig: () => ipcRenderer.invoke('get-backup-config'),
+    saveBackupConfig: (config: any) => ipcRenderer.invoke('save-backup-config', config),
     revealInFileExplorer: (filePath: string) => ipcRenderer.invoke('reveal-in-file-explorer', filePath),
     saveAuthSession: (session: { token: string; user: unknown }) => ipcRenderer.invoke('save-auth-session', session),
     getAuthSession: () => ipcRenderer.invoke('get-auth-session'),

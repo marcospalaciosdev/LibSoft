@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, Notification as ElectronNotification } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import { exec, spawnSync, spawn } from 'child_process';
@@ -17,16 +17,10 @@ export interface BackupHistoryEntry {
 	error?: string;
 }
 
-/**
- * Obtiene la ruta del archivo de historial de backups
- */
 function getHistoryPath(): string {
 	return path.join(app.getPath('userData'), 'backup_history.json');
 }
 
-/**
- * Lee el historial de backups desde el archivo
- */
 export function readBackupHistory(): BackupHistoryEntry[] {
 	const historyPath = getHistoryPath();
 	if (!fs.existsSync(historyPath)) {
@@ -49,9 +43,6 @@ export function readBackupHistory(): BackupHistoryEntry[] {
 	}
 }
 
-/**
- * Agrega una nueva entrada al historial de backups
- */
 export async function addBackupHistoryEntry(
 	entry: Omit<BackupHistoryEntry, 'date' | 'exists'>
 ): Promise<void> {
@@ -83,18 +74,12 @@ export async function addBackupHistoryEntry(
 	}
 }
 
-/**
- * Convierte bytes a string legible (B, KB, MB)
- */
 function formatFileSize(bytes: number): string {
 	if (bytes < 1024) return `${bytes} B`;
 	if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
 	return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
-/**
- * Exporta un backup cifrado de la base de datos
- */
 export async function exportBackup(
 	folderPath: string,
 	userPassword: string,
@@ -170,7 +155,6 @@ export async function exportBackup(
 				return;
 			}
 
-			// Verificar integridad del dump
 			const verifyProc = spawn(pgRestoreBin, ['-l', filePath], {
 				env: {
 					...process.env,
@@ -227,18 +211,6 @@ export async function exportBackup(
 	});
 }
 
-/**
- * Importa un backup cifrado a la base de datos
- * SEGURO: Si algo falla, los datos originales se preservan
- * 
- * Estrategia:
- * 1. Descifrar el backup
- * 2. Crear BD temporal
- * 3. Aplicar migraciones en BD temporal
- * 4. Restaurar datos en BD temporal
- * 5. Si TODO funciona → SWAP BD original con temporal
- * 6. Si algo falla → Eliminar BD temporal, BD original intacta
- */
 export async function importBackup(
 	filePath: string,
 	userPassword: string,
@@ -258,11 +230,9 @@ export async function importBackup(
 	try {
 		console.log('[BACKUP] Iniciando importación segura del backup...');
 
-		// 1. Descifrar el backup a archivo temporal
 		console.log('[BACKUP] Descifrando archivo...');
 		tempDecryptedPath = await decryptFileToTemp(safeFilePath, userPassword);
 
-		// 2. Crear BD temporal para restauración
 		console.log(`[BACKUP] Creando BD temporal: ${tempDbName} con ${psqlBin}`);
 		const createTempDbResult = spawnSync(
 			psqlBin,
@@ -280,7 +250,6 @@ export async function importBackup(
 			throw new Error(`Error al crear BD temporal: ${createTempDbResult.stderr || createTempDbResult.stdout}`);
 		}
 
-		// 3. Aplicar migraciones en BD temporal
 		console.log('[BACKUP] Aplicando migraciones en BD temporal...');
 		const backendRoot = isProd
 			? path.join(process.resourcesPath, 'backend')
@@ -323,7 +292,6 @@ export async function importBackup(
 			});
 		});
 
-		// 4. Restaurar datos en BD temporal
 		console.log('[BACKUP] Restaurando datos en BD temporal con:', pgRestoreBin);
 		await new Promise<void>((resolve, reject) => {
 			const fileStats = fs.statSync(tempDecryptedPath!);
@@ -366,7 +334,6 @@ export async function importBackup(
 					return;
 				}
 
-				// Verificar que efectivamente se restauraron datos
 				setTimeout(() => {
 					const verifyResult = spawnSync(
 						psqlBin,
@@ -388,7 +355,6 @@ export async function importBackup(
 			});
 		});
 
-		// 5. SWAP: Intercambiar BD original con BD temporal (OPERACIÓN ATÓMICA)
 		console.log('[BACKUP] Preparando SWAP: matando conexiones a BD vieja...');
 
 		const killConnectionsSql = `SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '${dbConfig.dbName}' AND pid <> pg_backend_pid();`;
@@ -427,7 +393,6 @@ export async function importBackup(
 
 		console.log('[BACKUP] ✅ SWAP completado exitosamente');
 
-		// Reconectar el pool de conexiones del backend
 		const backendPort = process.env.PORT || 5000;
 		console.log(`[BACKUP] Reconectando pool de conexiones en http://localhost:${backendPort}...`);
 		try {
@@ -443,12 +408,10 @@ export async function importBackup(
 			console.warn('[BACKUP] Advertencia: No se pudo reconectar pool:', err.message);
 		}
 
-		// Limpiar archivo temporal descifrado
 		if (tempDecryptedPath && fs.existsSync(tempDecryptedPath)) {
 			try { fs.unlinkSync(tempDecryptedPath); } catch { }
 		}
 
-		// Guardar en historial
 		const sizeInBytes = fs.statSync(safeFilePath).size;
 		const sizeStr = formatFileSize(sizeInBytes);
 
@@ -463,14 +426,12 @@ export async function importBackup(
 		return { filePath: safeFilePath, requiresReload: true };
 
 	} catch (err: any) {
-		// ROLLBACK: Si algo falló, limpiar BD temporal y preservar original
 		console.error('[BACKUP] ❌ Error durante la importación, iniciando rollback...');
 
 		if (tempDecryptedPath && fs.existsSync(tempDecryptedPath)) {
 			try { fs.unlinkSync(tempDecryptedPath); } catch { }
 		}
 
-		// Intentar eliminar BD temporal si existe
 		try {
 			console.log(`[BACKUP] Limpiando BD temporal: ${tempDbName}`);
 			spawnSync(
@@ -503,35 +464,165 @@ export async function importBackup(
 	}
 }
 
-function getBackupSettingsPath(): string {
-	return path.join(app.getPath('userData'), 'backup_settings.json');
+export interface BackupConfig {
+	route: string;
+	frequency: number; // en segundos (ej. 86400 = 24h)
+	enabled: boolean;
+	lastAutoBackup?: string;
+	autoBackupPassword?: string;
+}
+
+function getConfigFilePath(): string {
+	return path.join(app.getPath('userData'), 'backup_config.json');
+}
+
+/**
+ * Obtiene la configuración de backups (crea una por defecto si no existe)
+ */
+export function getBackupConfig(): BackupConfig {
+	const configPath = getConfigFilePath();
+	const defaultDir = path.join(app.getPath('userData'), 'backups');
+
+	if (!fs.existsSync(defaultDir)) {
+		try {
+			fs.mkdirSync(defaultDir, { recursive: true });
+		} catch (e) {
+			console.error('[BACKUP] Error al crear directorio default de backups:', e);
+		}
+	}
+
+	const defaultConfig: BackupConfig = {
+		route: defaultDir,
+		frequency: 86400, // 24 horas
+		enabled: false
+	};
+
+	if (!fs.existsSync(configPath)) {
+		try {
+			fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2), 'utf8');
+		} catch (e) {
+			console.error('[BACKUP] Error al crear backup_config.json inicial:', e);
+		}
+		return defaultConfig;
+	}
+
+	try {
+		const raw = fs.readFileSync(configPath, 'utf8');
+		return { ...defaultConfig, ...JSON.parse(raw) };
+	} catch (e) {
+		console.error('[BACKUP] Error al leer backup_config.json:', e);
+		return defaultConfig;
+	}
+}
+
+/**
+ * Guarda o actualiza la configuración de backups
+ */
+export function saveBackupConfig(partial: Partial<BackupConfig>): BackupConfig {
+	const current = getBackupConfig();
+	const updated: BackupConfig = { ...current, ...partial };
+	try {
+		fs.writeFileSync(getConfigFilePath(), JSON.stringify(updated, null, 2), 'utf8');
+		console.log('[BACKUP] Configuración de backup actualizada:', updated);
+	} catch (e) {
+		console.error('[BACKUP] Error al guardar backup_config.json:', e);
+		throw e;
+	}
+
+	restartAutoBackupScheduler();
+	return updated;
 }
 
 export async function getDefaultBackupRoute(): Promise<string> {
-	const fallback = path.join(app.getPath('userData'), 'backups');
-	try {
-		const settingsPath = getBackupSettingsPath();
-		if (fs.existsSync(settingsPath)) {
-			const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
-			if (typeof settings.defaultBackupRoute === 'string' && settings.defaultBackupRoute) {
-				return settings.defaultBackupRoute;
-			}
-		}
-	} catch (err) {
-		console.error('[BACKUP] Error leyendo backup_settings.json:', err);
-	}
-	return fallback;
+	return getBackupConfig().route;
 }
 
 export async function setDefaultBackupRoute(route: string): Promise<string> {
-	if (!route || !path.isAbsolute(route)) {
-		throw new Error('Ruta de backup inválida');
+	const updated = saveBackupConfig({ route });
+	return updated.route;
+}
+
+export async function setAutoBackupFrequency(frequency: number): Promise<number> {
+	const updated = saveBackupConfig({ frequency });
+	return updated.frequency;
+}
+
+// ── Planificador (Scheduler) de Backups Automáticos ──────────────
+let autoBackupTimer: NodeJS.Timeout | null = null;
+let cachedDbConfig: { user: string; password: string; host: string; port: string; dbName: string } | null = null;
+let cachedIsProd: boolean = false;
+
+export function initAutoBackupScheduler(
+	dbConfig: { user: string; password: string; host: string; port: string; dbName: string },
+	isProd: boolean
+): void {
+	cachedDbConfig = dbConfig;
+	cachedIsProd = isProd;
+	restartAutoBackupScheduler();
+}
+
+export function restartAutoBackupScheduler(): void {
+	if (autoBackupTimer) {
+		clearInterval(autoBackupTimer);
+		autoBackupTimer = null;
 	}
-	fs.mkdirSync(route, { recursive: true });
-	fs.writeFileSync(
-		getBackupSettingsPath(),
-		JSON.stringify({ defaultBackupRoute: route }, null, 2),
-		'utf-8'
-	);
-	return route;
+
+	const config = getBackupConfig();
+	if (!config.enabled || !cachedDbConfig) {
+		console.log('[BACKUP] Auto-backup deshabilitado o BD no configurada');
+		return;
+	}
+
+	console.log(`[BACKUP] Auto-backup scheduler activo: cada ${config.frequency}s hacia ${config.route}`);
+
+	// Verificación periódica cada 60 segundos
+	const CHECK_INTERVAL_MS = 60 * 1000;
+
+	const checkAndRun = async () => {
+		try {
+			const currentConfig = getBackupConfig();
+			if (!currentConfig.enabled || !cachedDbConfig) return;
+
+			const now = Date.now();
+			const lastTime = currentConfig.lastAutoBackup
+				? new Date(currentConfig.lastAutoBackup).getTime()
+				: 0;
+
+			const elapsedSeconds = (now - lastTime) / 1000;
+
+			if (elapsedSeconds >= currentConfig.frequency) {
+				console.log('[BACKUP] Disparando backup automático programado...');
+
+				const autoBackupPass = currentConfig.autoBackupPassword || 'LibSoftAutoBackupKey';
+
+				const result = await exportBackup(
+					currentConfig.route,
+					autoBackupPass,
+					cachedDbConfig,
+					cachedIsProd
+				);
+
+				saveBackupConfig({ lastAutoBackup: new Date().toISOString() });
+				console.log('[BACKUP] ✅ Backup automático generado exitosamente:', result.filePath);
+
+				if (ElectronNotification.isSupported()) {
+					new ElectronNotification({
+						title: 'Backup automático completado',
+						body: `Se ha generado una copia de seguridad en: ${result.fileName}`
+					}).show();
+				}
+			}
+		} catch (error: any) {
+			console.error('[BACKUP] ❌ Error en ejecución de backup automático:', error);
+			if (ElectronNotification.isSupported()) {
+				new ElectronNotification({
+					title: 'Error en backup automático',
+					body: error?.message || 'No se pudo completar el backup automático.'
+				}).show();
+			}
+		}
+	};
+
+	checkAndRun();
+	autoBackupTimer = setInterval(checkAndRun, CHECK_INTERVAL_MS);
 }

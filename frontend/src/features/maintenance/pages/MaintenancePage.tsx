@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { firstCap } from "@/shared/utils/firstCap";
 import { useTranslation } from "react-i18next";
 
-import { Button, Badge, Input } from "@/shared/components/ui/index";
+import { Button, Badge, Input, ToggleSwitch } from "@/shared/components/ui/index";
 import { useBackup } from "../hooks/useBackup";
 import { BackupPasswordModal } from "../components/BackupPasswordModal";
 
@@ -22,14 +22,20 @@ export function MaintenancePage() {
         exportBackup,
         importBackup,
         getDefaultBackupRoute,
-        setDefaultBackupRoute
+        setDefaultBackupRoute,
+        config,
+        updateBackupConfig
     } = useBackup();
 
     const [defaultRoute, setDefaultRoute] = useState('');
 
     useEffect(() => {
-        getDefaultBackupRoute().then(setDefaultRoute);
-    }, []);
+        if (config?.route) {
+            setDefaultRoute(config.route);
+        } else {
+            getDefaultBackupRoute().then(setDefaultRoute);
+        }
+    }, [config?.route]);
 
     const [passwordModal, setPasswordModal] = useState<{
         isOpen: boolean;
@@ -76,11 +82,35 @@ export function MaintenancePage() {
         const folder = await window.electronAPI.selectFolder();
         if (!folder) return;
         try {
-            setDefaultRoute(await setDefaultBackupRoute(folder));
+            await updateBackupConfig({ route: folder });
+            setDefaultRoute(folder);
         } catch (err) {
             console.error(err);
         }
     };
+
+    const handleToggleAutoBackup = async (checked: boolean) => {
+        try {
+            await updateBackupConfig({ enabled: checked });
+        } catch (err) {
+            console.error('Error al cambiar estado de backup automático:', err);
+        }
+    };
+
+    const handleFrequencyChange = async (seconds: number) => {
+        try {
+            await updateBackupConfig({ frequency: seconds });
+        } catch (err) {
+            console.error('Error al cambiar frecuencia de backup:', err);
+        }
+    };
+
+    const FREQUENCY_OPTIONS = [
+        { label: firstCap(t('maintenance.systemBackup.config.autoBackup.frequencies.sixHours')), seconds: 21600 },
+        { label: firstCap(t('maintenance.systemBackup.config.autoBackup.frequencies.twelveHours')), seconds: 43200 },
+        { label: firstCap(t('maintenance.systemBackup.config.autoBackup.frequencies.daily')), seconds: 86400 },
+        { label: firstCap(t('maintenance.systemBackup.config.autoBackup.frequencies.weekly')), seconds: 604800 },
+    ];
 
     const handlePasswordSubmit = async (password: string) => {
         if (passwordModal.mode === 'export') {
@@ -221,31 +251,85 @@ export function MaintenancePage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full flex flex-col">
-                            <Input
-                                className="w-1/2"
-                                inputClassName="rounded-md text-sm"
-                                label={
-                                    <div className="flex flex-row items-center gap-2">
-                                        <span>
-                                            {firstCap(t('maintenance.systemBackup.config.defaultBackupRoute.label'))}
-                                        </span>
-                                        <Button
-                                            variant="ghost"
-                                            className='p-1.5! aspect-square rounded-sm'
-                                            onClick={async () => { await handleSelectRoute() }}
-                                            isDisabled={exportStatus === 'loading' || importStatus === 'loading'}
-                                        >
-                                            <span className="material-symbols-outlined text-(length:--fs-icon-sm) text-[rgb(var(--color-text-muted))]">
-                                                folder
+                        <div className="w-full flex flex-col gap-4 pt-4 border-t border-[rgb(var(--color-border))]">
+                            <div className="flex flex-col justify-between gap-4">
+                                <Input
+                                    className="w-full sm:w-1/2"
+                                    inputClassName="rounded-md text-sm"
+                                    label={
+                                        <div className="flex flex-row items-center gap-2">
+                                            <span>
+                                                {firstCap(t('maintenance.systemBackup.config.defaultBackupRoute.label'))}
                                             </span>
-                                        </Button>
+                                            <Button
+                                                variant="ghost"
+                                                className='p-1.5! aspect-square rounded-sm'
+                                                onClick={async () => { await handleSelectRoute() }}
+                                                isDisabled={exportStatus === 'loading' || importStatus === 'loading'}
+                                            >
+                                                <span className="material-symbols-outlined text-(length:--fs-icon-sm) text-[rgb(var(--color-text-muted))]">
+                                                    folder
+                                                </span>
+                                            </Button>
+                                        </div>
+                                    }
+                                    value={defaultRoute}
+                                    readOnly
+                                    disabled
+                                />
+                                <div className="flex flex-col gap-1">
+                                    <div className="flex flex-row items-center gap-2">
+                                        <input
+                                            id="autoBackup"
+                                            type="checkbox"
+                                            checked={config?.enabled ?? false}
+                                            onChange={(e) => {
+                                                handleToggleAutoBackup(e.target.checked);
+                                            }}
+                                        />
+                                        <label
+                                            className="text-sm font-medium text-[rgb(var(--color-text))] cursor-pointer"
+                                            htmlFor="autoBackup"
+                                        >
+                                            {firstCap(t('maintenance.systemBackup.config.autoBackup.label'))}
+                                        </label>
                                     </div>
-                                }
-                                value={defaultRoute}
-                                readOnly
-                                disabled
-                            />
+                                    {config?.lastAutoBackup && (
+                                        <span className="text-(length:--fs-caption) text-[rgb(var(--color-text-muted))]">
+                                            {firstCap(t('maintenance.systemBackup.config.autoBackup.lastBackup'))}{' '}
+                                            {new Date(config.lastAutoBackup).toLocaleString(undefined, {
+                                                timeZone: localStorage.getItem('timezone') || Intl.DateTimeFormat().resolvedOptions().timeZone
+                                            })}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+
+                            {config?.enabled && (
+                                <div className="flex flex-col gap-2 animate-fade-in">
+                                    <span className="text-xs font-semibold text-[rgb(var(--color-text-muted))] uppercase tracking-wider">
+                                        {firstCap(t('maintenance.systemBackup.config.autoBackup.frequencyLabel'))}
+                                    </span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {FREQUENCY_OPTIONS.map((opt) => {
+                                            const isSelected = (config?.frequency ?? 86400) === opt.seconds;
+                                            return (
+                                                <button
+                                                    key={opt.seconds}
+                                                    type="button"
+                                                    onClick={() => handleFrequencyChange(opt.seconds)}
+                                                    className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-colors cursor-pointer ${isSelected
+                                                        ? 'bg-[rgb(var(--color-primary-500))] text-white border-[rgb(var(--color-primary-500))]'
+                                                        : 'bg-[rgb(var(--color-bg-secondary))] text-[rgb(var(--color-text))] border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-bg-secondary))]/80'
+                                                        }`}
+                                                >
+                                                    {opt.label}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className="rounded-lg bg-[rgb(var(--color-bg))] p-6">

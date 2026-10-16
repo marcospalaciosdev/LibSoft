@@ -42,6 +42,29 @@ export const en = {
       errorTitle: 'restoration failed',
       error: 'could not restore backup:',
     },
+
+    config: {
+      title: 'configuration',
+      description: 'configuration',
+      defaultBackupRoute: {
+        label: 'default backup path',
+        placeholder: 'select folder...',
+      },
+      defaultBackupRouteDescription: 'default location where backups will be saved.',
+      autoBackup: {
+        label: 'automatic backups',
+        description: 'regularly create database backups in the background',
+        frequencyLabel: 'frequency',
+        lastBackup: 'last automatic backup:',
+        never: 'never',
+        frequencies: {
+          sixHours: 'every 6 hours',
+          twelveHours: 'every 12 hours',
+          daily: 'daily (every 24 hours)',
+          weekly: 'weekly (every 7 days)',
+        },
+      },
+    },
   },
 
   backupHistory: {
@@ -141,6 +164,19 @@ export const es = {
         placeholder: "seleccionar carpeta...",
       },
       defaultBackupRouteDescription: "ubicación por defecto donde se guardarán las copias de seguridad.",
+      autoBackup: {
+        label: "hacer backups automáticos",
+        description: "genera copias de seguridad de la base de datos de forma periódica en segundo plano",
+        frequencyLabel: "frecuencia",
+        lastBackup: "último backup automático:",
+        never: "nunca",
+        frequencies: {
+          sixHours: "cada 6 horas",
+          twelveHours: "cada 12 horas",
+          daily: "diario (cada 24 horas)",
+          weekly: "semanal (cada 7 días)",
+        },
+      },
     },
   },
 

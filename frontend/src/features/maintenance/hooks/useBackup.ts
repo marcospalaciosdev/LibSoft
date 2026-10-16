@@ -1,14 +1,31 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { firstCap } from '@/shared/utils/firstCap';
-import type { BackupHistoryEntry } from '@/electron';
+import type { BackupHistoryEntry, BackupConfig } from '@/electron';
 
 export function useBackup() {
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [history, setHistory] = useState<BackupHistoryEntry[]>([]);
+  const [config, setConfig] = useState<BackupConfig | null>(null);
 
   const { t } = useTranslation();
+
+  const fetchConfig = useCallback(async () => {
+    if (!window.electronAPI?.getBackupConfig) return null;
+    try {
+      const cfg = await window.electronAPI.getBackupConfig();
+      setConfig(cfg);
+      return cfg;
+    } catch (err) {
+      console.error('Error al cargar configuración de backup:', err);
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchConfig();
+  }, [fetchConfig]);
 
   const fetchHistory = useCallback(async () => {
     try {
@@ -26,8 +43,6 @@ export function useBackup() {
   useEffect(() => {
     fetchHistory();
   }, [fetchHistory]);
-
-
 
   const exportBackup = async (folderPath: string, password: string) => {
     if (!window.electronAPI?.exportBackup) return;
@@ -125,6 +140,18 @@ export function useBackup() {
     return await window.electronAPI.setDefaultBackupRoute(route);
   }
 
+  const updateBackupConfig = async (partial: Partial<BackupConfig>) => {
+    if (!window.electronAPI?.saveBackupConfig) return null;
+    try {
+      const updated = await window.electronAPI.saveBackupConfig(partial);
+      setConfig(updated);
+      return updated;
+    } catch (err) {
+      console.error('Error al guardar configuración de backup:', err);
+      throw err;
+    }
+  };
+
   const lastSuccessExport = history.find(h => h.type === 'export' && h.status === 'success');
 
   return {
@@ -136,6 +163,9 @@ export function useBackup() {
     importBackup,
     refreshHistory: fetchHistory,
     getDefaultBackupRoute,
-    setDefaultBackupRoute
+    setDefaultBackupRoute,
+    config,
+    fetchConfig,
+    updateBackupConfig
   };
 }

@@ -10,7 +10,10 @@ import {
 	importBackup,
 	readBackupHistory,
 	getDefaultBackupRoute,
-	setDefaultBackupRoute
+	setDefaultBackupRoute,
+	getBackupConfig,
+	saveBackupConfig,
+	initAutoBackupScheduler
 } from './backup';
 
 /**
@@ -27,7 +30,21 @@ export function registerIpcHandlers(
 	isProd: boolean,
 	getMainWindow: () => BrowserWindow | null
 ): void {
-	// ── Autenticación ────────────────────────────────────────
+	// ── Inicializar Scheduler de Backups Automáticos ─────────
+	initAutoBackupScheduler(dbConfig, isProd);
+
+	// ── Configuración de Backups ─────────────────────────────
+	ipcMain.handle('get-backup-config', async () => {
+		return getBackupConfig();
+	});
+
+	ipcMain.handle('save-backup-config', async (_event, config: any) => {
+		try {
+			return saveBackupConfig(config);
+		} catch (error: any) {
+			throw new Error(error.message || 'Error al guardar la configuración de backup');
+		}
+	});
 
 	ipcMain.handle('get-default-backup-path', async () => {
 		return getDefaultBackupRoute();

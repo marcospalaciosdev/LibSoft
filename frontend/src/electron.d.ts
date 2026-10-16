@@ -10,6 +10,14 @@ export interface BackupHistoryEntry {
   exists?: boolean;
 }
 
+export interface BackupConfig {
+  route: string;
+  frequency: number;
+  enabled: boolean;
+  lastAutoBackup?: string;
+  autoBackupPassword?: string;
+}
+
 interface ElectronAPI {
   minimizeWindow: () => void;
   maximizeWindow: () => void;
@@ -23,6 +31,8 @@ interface ElectronAPI {
   getBackupHistory: () => Promise<BackupHistoryEntry[]>;
   getDefaultBackupRoute: () => Promise<string>;
   setDefaultBackupRoute: (route: string) => Promise<string>;
+  getBackupConfig: () => Promise<BackupConfig>;
+  saveBackupConfig: (config: Partial<BackupConfig>) => Promise<BackupConfig>;
   showNotification: (title: string, body: string) => void;
   revealInFileExplorer: (filePath: string) => Promise<void>;
   saveAuthSession: (session: { token: string; user: unknown }) => Promise<void>;
