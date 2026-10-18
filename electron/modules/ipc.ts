@@ -17,7 +17,19 @@ import {
 } from './backup';
 
 /**
- * Registra todos los manejadores IPC de la aplicación
+ * IPC Module
+ *
+ * Registers all IPC (Inter-Process Communication) handlers for the application.
+ * Each handler bridges a frontend request (via window.electronAPI) to a
+ * main-process function.
+ *
+ * Grouped by domain:
+ *  - Backup configuration
+ *  - Auth session
+ *  - Backup export/import
+ *  - Notifications
+ *  - File dialogs
+ *  - File explorer utilities
  */
 export function registerIpcHandlers(
 	dbConfig: {
@@ -30,10 +42,11 @@ export function registerIpcHandlers(
 	isProd: boolean,
 	getMainWindow: () => BrowserWindow | null
 ): void {
-	// ── Inicializar Scheduler de Backups Automáticos ─────────
+	// ── Auto-backup scheduler ────────────────────────────────────
+	// Initialize the scheduler immediately so it can run on startup if enabled
 	initAutoBackupScheduler(dbConfig, isProd);
 
-	// ── Configuración de Backups ─────────────────────────────
+	// ── Backup configuration ─────────────────────────────────────
 	ipcMain.handle('get-backup-config', async () => {
 		return getBackupConfig();
 	});
@@ -42,7 +55,7 @@ export function registerIpcHandlers(
 		try {
 			return saveBackupConfig(config);
 		} catch (error: any) {
-			throw new Error(error.message || 'Error al guardar la configuración de backup');
+			throw new Error(error.message || 'Failed to save backup configuration');
 		}
 	});
 
@@ -54,15 +67,16 @@ export function registerIpcHandlers(
 		try {
 			return await setDefaultBackupRoute(route);
 		} catch (error: any) {
-			throw new Error(error.message || 'Error al guardar la ruta de backup');
+			throw new Error(error.message || 'Failed to save backup path');
 		}
 	});
 
+	// ── Auth session ─────────────────────────────────────────────
 	ipcMain.handle('save-auth-session', (_event, session: { token: string; user: unknown }) => {
 		try {
 			saveAuthSession(session);
 		} catch (error: any) {
-			throw new Error(error.message || 'Error al guardar sesión');
+			throw new Error(error.message || 'Failed to save auth session');
 		}
 	});
 
@@ -74,12 +88,12 @@ export function registerIpcHandlers(
 		clearAuthSession();
 	});
 
-	// ── Backups ──────────────────────────────────────────────
+	// ── Backup export / import ───────────────────────────────────
 	ipcMain.handle('export-backup', async (_event, folderPath: string, userPassword: string) => {
 		try {
 			return await exportBackup(folderPath, userPassword, dbConfig, isProd);
 		} catch (error: any) {
-			throw new Error(error.message || 'Error al exportar backup');
+			throw new Error(error.message || 'Failed to export backup');
 		}
 	});
 
@@ -87,7 +101,7 @@ export function registerIpcHandlers(
 		try {
 			return await importBackup(filePath, userPassword, dbConfig, isProd);
 		} catch (error: any) {
-			throw new Error(error.message || 'Error al importar backup');
+			throw new Error(error.message || 'Failed to import backup');
 		}
 	});
 
@@ -95,7 +109,7 @@ export function registerIpcHandlers(
 		return readBackupHistory();
 	});
 
-	// ── Notificaciones ───────────────────────────────────────
+	// ── Notifications ────────────────────────────────────────────
 	ipcMain.on('show-notification', (_event, title: string, body: string) => {
 		new Notification({
 			title,
@@ -103,14 +117,14 @@ export function registerIpcHandlers(
 		}).show();
 	});
 
-	// ── Diálogos de archivo ──────────────────────────────────
+	// ── File dialogs ─────────────────────────────────────────────
 	ipcMain.handle('select-folder', async () => {
 		const mainWindow = getMainWindow();
 		if (!mainWindow) return null;
 
 		const result = await dialog.showOpenDialog(mainWindow, {
 			properties: ['openDirectory'],
-			title: 'Seleccionar carpeta para el backup'
+			title: 'Select backup destination folder'
 		});
 
 		if (result.canceled || result.filePaths.length === 0) return null;
@@ -123,10 +137,10 @@ export function registerIpcHandlers(
 
 		const result = await dialog.showOpenDialog(mainWindow, {
 			properties: ['openFile'],
-			title: 'Seleccionar archivo de backup',
+			title: 'Select backup file',
 			filters: [
 				{ name: 'Libsoft Backups', extensions: ['lsbak'] },
-				{ name: 'Todos los archivos', extensions: ['*'] }
+				{ name: 'All Files', extensions: ['*'] }
 			]
 		});
 
@@ -134,13 +148,14 @@ export function registerIpcHandlers(
 		return result.filePaths[0];
 	});
 
-	// ── Explorador de archivos ───────────────────────────────
+	// ── File explorer ────────────────────────────────────────────
 	ipcMain.handle('reveal-in-file-explorer', (_event, filePath: string) => {
 		if (!filePath) return;
 
+		// Resolve to an absolute, normalized path before passing to the shell
 		const safePath = path.resolve(filePath);
 		shell.showItemInFolder(safePath);
 	});
 
-	console.log('[IPC] Manejadores IPC registrados');
+	console.log('[IPC] IPC handlers registered');
 }

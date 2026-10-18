@@ -1,13 +1,13 @@
 /**
  * LibSoft - Electron Main Process
  *
- * Punto de entrada de la aplicación de escritorio.
- * Gestiona:
- * - Ciclo de vida de la aplicación (ready, quit, etc.)
- * - Inicialización de PostgreSQL embebido (en producción)
- * - Creación de la ventana principal
- * - Registro de manejadores IPC
- * - Inicialisación del servidor backend
+ * Entry point for the desktop application.
+ * Manages:
+ * - Application lifecycle (ready, quit, etc.)
+ * - Embedded PostgreSQL initialization (in production)
+ * - Main window creation
+ * - IPC handler registration
+ * - Backend server initialization
  */
 
 import { app, dialog } from 'electron';
@@ -15,41 +15,41 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as dotenv from 'dotenv';
 
-// ── Módulos propios ──────────────────────────────────────────
+// ── Internal modules ──────────────────────────────────────────
 import { setupPostgresEnv, startEmbeddedPostgres, stopEmbeddedPostgres, getPostgresConfig } from './modules/postgres';
 import { createWindow, getMainWindow } from './modules/window';
 import { registerIpcHandlers } from './modules/ipc';
 
-// ── Configuración global ─────────────────────────────────────
+// ── Global configuration ─────────────────────────────────────
 process.env.ELECTRON_RUN = 'true';
 
 const IS_PROD = app.isPackaged;
 const isDev = !IS_PROD;
 
-console.log(`[APP] Iniciando en modo ${IS_PROD ? 'PRODUCCIÓN' : 'DESARROLLO'}`);
+console.log(`[APP] Starting in ${IS_PROD ? 'PRODUCTION' : 'DEVELOPMENT'} mode`);
 
-// ── Cargar variables de entorno ──────────────────────────────
+// ── Load environment variables ───────────────────────────────
 if (isDev) {
 	const backendEnvPath = path.join(__dirname, '..', '..', 'backend', '.env');
 	const result = dotenv.config({ path: backendEnvPath });
 	if (result.error) {
-		console.warn('[APP] No se pudo cargar backend/.env:', result.error.message);
+		console.warn('[APP] Could not load backend/.env:', result.error.message);
 	}
 }
 setupPostgresEnv();
 
-// ── Eventos de ciclo de vida ─────────────────────────────────
+// ── Lifecycle events ─────────────────────────────────────────
 
 /**
- * Evento: La aplicación está lista
- * Ejecuta la secuencia de inicialización completa
+ * Event: Application is ready
+ * Executes the full initialization sequence
  */
 app.on('ready', async () => {
 	try {
-		console.log('[APP] Evento ready disparado');
+		console.log('[APP] Ready event fired');
 
 		if (IS_PROD) {
-			console.log('[APP] Iniciando PostgreSQL embebido...');
+			console.log('[APP] Starting embedded PostgreSQL...');
 			await startEmbeddedPostgres();
 		}
 
@@ -62,54 +62,54 @@ app.on('ready', async () => {
 			dbName: process.env.DB_NAME || pgConfig.dbName
 		};
 
-		console.log('[APP] Configuración de BD:', {
+		console.log('[APP] Database configuration:', {
 			...dbConfig,
 			password: '***'
 		});
 
 		registerIpcHandlers(dbConfig, IS_PROD, getMainWindow);
 
-		console.log('[APP] Iniciando servidor backend...');
+		console.log('[APP] Starting backend server...');
 		await startBackendServer(isDev);
 
-		console.log('[APP] Creando ventana principal...');
+		console.log('[APP] Creating main window...');
 		await createWindow(isDev);
 
-		console.log('[APP] Aplicación iniciada exitosamente');
+		console.log('[APP] Application started successfully');
 	} catch (err: any) {
 		const errMsg = err?.message || String(err);
-		console.error('[APP] Error fatal al iniciar:', errMsg);
-		dialog.showErrorBox('Error al iniciar la aplicación', errMsg);
+		console.error('[APP] Fatal error during startup:', errMsg);
+		dialog.showErrorBox('Error starting the application', errMsg);
 		app.quit();
 	}
 });
 
 /**
- * Evento: Todas las ventanas fueron cerradas
- * En macOS, las aplicaciones permanecen activas hasta que se cierra explícitamente
+ * Event: All windows were closed
+ * On macOS, applications remain active until explicitly quit
  */
 app.on('window-all-closed', () => {
-	console.log('[APP] Todas las ventanas fueron cerradas');
+	console.log('[APP] All windows were closed');
 	if (process.platform !== 'darwin') {
 		app.quit();
 	}
 });
 
 /**
- * Evento: La aplicación va a salir
- * Limpia recursos antes de cerrar
+ * Event: Application is about to quit
+ * Cleans up resources before closing
  */
 app.on('will-quit', () => {
-	console.log('[APP] Aplicación cerrando, limpiando recursos...');
+	console.log('[APP] Application closing, cleaning up resources...');
 	stopEmbeddedPostgres();
 });
 
-// ── Funciones auxiliares ─────────────────────────────────────
+// ── Helper functions ─────────────────────────────────────────
 
 /**
- * Inicia el servidor backend de Express
- * En desarrollo: carga el archivo .ts con ts-node
- * En producción: carga el archivo .js compilado
+ * Starts the Express backend server
+ * In development: loads the .ts file with ts-node
+ * In production: loads the compiled .js file
  */
 async function startBackendServer(isDev: boolean): Promise<void> {
 	try {
@@ -117,7 +117,7 @@ async function startBackendServer(isDev: boolean): Promise<void> {
 		const backendDistPath = path.join(__dirname, '..', '..', 'backend', 'dist', 'app.js');
 		const backendEntryPath = isDev ? backendSrcPath : backendDistPath;
 
-		// En desarrollo, registrar ts-node si el archivo es TypeScript
+		// In development, register ts-node if the file is TypeScript
 		if (isDev && backendEntryPath.endsWith('.ts')) {
 			require('ts-node').register({
 				compilerOptions: {
@@ -127,26 +127,26 @@ async function startBackendServer(isDev: boolean): Promise<void> {
 			});
 		}
 
-		// Validar que el archivo existe
+		// Validate that the file exists
 		if (!fs.existsSync(backendEntryPath)) {
-			throw new Error(`No se encontró el archivo de entrada del backend: ${backendEntryPath}`);
+			throw new Error(`Backend entry file not found: ${backendEntryPath}`);
 		}
 
-		// Cargar y ejecutar la función startServer
+		// Load and execute the startServer function
 		const { startServer } = require(backendEntryPath);
 
 		if (typeof startServer !== 'function') {
-			throw new Error('El backend no exporta una función startServer');
+			throw new Error('Backend does not export a startServer function');
 		}
 
 		await startServer();
-		console.log('[BACKEND] Servidor iniciado');
+		console.log('[BACKEND] Server started');
 	} catch (error: any) {
 		const errMsg = error?.message || String(error);
 
-		// Si el puerto ya está en uso, podría ser que el servidor ya está corriendo
+		// If the port is already in use, the server may already be running
 		if (error?.code === 'EADDRINUSE' || errMsg.includes('EADDRINUSE')) {
-			console.warn('[BACKEND] Puerto 5000 ya está en uso. El servidor puede estar corriendo desde antes.');
+			console.warn('[BACKEND] Port 5000 is already in use. The server may already be running.');
 		} else {
 			throw error;
 		}
